@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, AlertCircle } from "lucide-react";
-import BookCardV2 from "@/components/BookCardV2";
+import BookCard from "@/components/BookCard";
 import AddBookForm from "@/components/AddBookForm";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
@@ -13,7 +13,7 @@ import BookDetailsDialog from "@/components/BookDetailsDialog";
 import { Book, dbToBook, bookToDb } from "@/data/sampleBooks";
 import { supabase } from "@/lib/supabase";
 
-export default function BookshelfV2() {
+export default function Bookshelf() {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -228,7 +228,7 @@ export default function BookshelfV2() {
           <AnimatePresence mode="popLayout">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredBooks.map((book, index) => (
-                <BookCardV2
+                <BookCard
                   key={book.id}
                   book={book}
                   onUpdateBook={handleUpdateBook}
