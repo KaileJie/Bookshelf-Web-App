@@ -20,9 +20,6 @@ export default function Header() {
       <p className="text-lg text-gray-600">
         Track your reading journey with enhanced progress tracking
       </p>
-      <div className="mt-2 inline-block px-3 py-1 bg-orange-100 text-orange-800 text-sm font-medium rounded-full">
-        v2.0 - Enhanced Edition
-      </div>
     </motion.div>
   );
 }
