@@ -8,6 +8,44 @@ export interface Book {
   notes: string;
   readingStatus: "Not Started" | "Reading" | "Completed";
   coverUrl: string;
+  created_at?: string;
+}
+
+// Helper to convert Supabase DB format to App format
+export function dbToBook(dbBook: any): Book {
+  return {
+    id: dbBook.id,
+    title: dbBook.title,
+    author: dbBook.author,
+    category: dbBook.category || 'Fiction',
+    description: dbBook.description || '',
+    rating: dbBook.rating || 0,
+    notes: dbBook.notes || '',
+    readingStatus: dbBook.reading_status || 'Not Started',
+    coverUrl: dbBook.cover_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
+    created_at: dbBook.created_at
+  };
+}
+
+// Helper to convert App format to Supabase DB format
+export function bookToDb(book: Partial<Book>, excludeId: boolean = false) {
+  const dbBook: any = {
+    title: book.title || '',
+    author: book.author || '',
+    category: book.category || 'Fiction',
+    description: book.description || '',
+    rating: book.rating || 0,
+    notes: book.notes || '',
+    reading_status: book.readingStatus || 'Not Started',
+    cover_url: book.coverUrl || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop'
+  };
+  
+  // Only include id if it exists and we're not excluding it
+  if (!excludeId && book.id) {
+    dbBook.id = book.id;
+  }
+  
+  return dbBook;
 }
 
 export const sampleBooks: Book[] = [

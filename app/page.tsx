@@ -1,32 +1,118 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Loader2, AlertCircle } from "lucide-react";
 import BookCard from "@/components/BookCard";
 import AddBookForm from "@/components/AddBookForm";
-import { Book, sampleBooks } from "@/data/sampleBooks";
+import { Book, dbToBook, bookToDb } from "@/data/sampleBooks";
+import { supabase } from "@/lib/supabase";
 
 export default function Bookshelf() {
-  const [books, setBooks] = useState<Book[]>(sampleBooks);
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAddBook = (newBook: Omit<Book, "id">) => {
-    const bookWithId: Book = {
-      ...newBook,
-      id: Date.now().toString(),
-    };
-    setBooks((prev) => [bookWithId, ...prev]);
+  // Fetch books from Supabase on mount
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  const fetchBooks = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const { data, error: fetchError } = await supabase
+        .from('books')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (fetchError) throw fetchError;
+
+      const formattedBooks = data?.map(dbToBook) || [];
+      setBooks(formattedBooks);
+    } catch (err: any) {
+      console.error('Error fetching books:', err);
+      setError(err.message || 'Failed to fetch books');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleUpdateBook = (id: string, updatedBook: Book) => {
-    setBooks((prev) =>
-      prev.map((book) => (book.id === id ? updatedBook : book))
-    );
+  const handleAddBook = async (newBook: Omit<Book, "id">) => {
+    try {
+      // Optimistic update
+      const tempId = Date.now().toString();
+      const bookWithId: Book = { ...newBook, id: tempId };
+      setBooks((prev) => [bookWithId, ...prev]);
+
+      // Insert into Supabase (exclude id to let database generate it)
+      const dbBook = bookToDb(newBook, true);
+      const { data, error: insertError } = await supabase
+        .from('books')
+        .insert([dbBook])
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+
+      // Replace temp book with real one
+      setBooks((prev) =>
+        prev.map((book) => (book.id === tempId ? dbToBook(data) : book))
+      );
+    } catch (err: any) {
+      console.error('Error adding book:', err);
+      setError(err.message || 'Failed to add book');
+      // Rollback optimistic update
+      fetchBooks();
+    }
   };
 
-  const handleDeleteBook = (id: string) => {
-    if (window.confirm("Are you sure you want to delete this book?")) {
+  const handleUpdateBook = async (id: string, updatedBook: Book) => {
+    try {
+      // Optimistic update
+      setBooks((prev) =>
+        prev.map((book) => (book.id === id ? updatedBook : book))
+      );
+
+      // Update in Supabase
+      const dbBook = bookToDb(updatedBook);
+      const { error: updateError } = await supabase
+        .from('books')
+        .update(dbBook)
+        .eq('id', id);
+
+      if (updateError) throw updateError;
+    } catch (err: any) {
+      console.error('Error updating book:', err);
+      setError(err.message || 'Failed to update book');
+      // Rollback optimistic update
+      fetchBooks();
+    }
+  };
+
+  const handleDeleteBook = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this book?")) {
+      return;
+    }
+
+    try {
+      // Optimistic update
       setBooks((prev) => prev.filter((book) => book.id !== id));
+
+      // Delete from Supabase
+      const { error: deleteError } = await supabase
+        .from('books')
+        .delete()
+        .eq('id', id);
+
+      if (deleteError) throw deleteError;
+    } catch (err: any) {
+      console.error('Error deleting book:', err);
+      setError(err.message || 'Failed to delete book');
+      // Rollback optimistic update
+      fetchBooks();
     }
   };
 
@@ -48,6 +134,24 @@ export default function Bookshelf() {
             Track your reading journey and manage your personal library
           </p>
         </motion.div>
+
+        {/* Error Message */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-800"
+          >
+            <AlertCircle className="w-5 h-5" />
+            <span>{error}</span>
+            <button
+              onClick={() => setError(null)}
+              className="ml-auto text-red-600 hover:text-red-800"
+            >
+              ✕
+            </button>
+          </motion.div>
+        )}
 
         {/* Add Book Form */}
         <div className="mb-12">
@@ -82,7 +186,11 @@ export default function Bookshelf() {
         </motion.div>
 
         {/* Books Grid */}
-        {books.length === 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-12 h-12 text-orange-600 animate-spin" />
+          </div>
+        ) : books.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

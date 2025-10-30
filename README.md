@@ -23,10 +23,11 @@ A beautiful, fully functional bookshelf web application built with React, Next.j
 
 - **Framework**: Next.js 14 with App Router
 - **Language**: TypeScript
+- **Database**: Supabase (PostgreSQL)
 - **Styling**: Tailwind CSS
 - **Animations**: Framer Motion
 - **Icons**: Lucide React
-- **State Management**: React useState
+- **State Management**: React useState + Supabase Client
 
 ## 🚀 Getting Started
 
@@ -38,7 +39,7 @@ A beautiful, fully functional bookshelf web application built with React, Next.j
 
 1. Navigate to the project directory:
 ```bash
-cd "书架 App"
+cd "Bookshelf App"
 ```
 
 2. Install dependencies:
@@ -46,12 +47,20 @@ cd "书架 App"
 npm install
 ```
 
-3. Run the development server:
+3. **Set up Supabase** (Required for data persistence):
+   - Follow the detailed guide in [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
+   - Create a `.env.local` file with your Supabase credentials:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+4. Run the development server:
 ```bash
 npm run dev
 ```
 
-4. Open your browser and visit:
+5. Open your browser and visit:
 ```
 http://localhost:3000
 ```
@@ -59,19 +68,26 @@ http://localhost:3000
 ## 📁 Project Structure
 
 ```
-书架 App/
+Bookshelf App/
 ├── app/
 │   ├── globals.css          # Global styles with Tailwind
 │   ├── layout.tsx           # Root layout component
-│   └── page.tsx             # Main Bookshelf page
+│   └── page.tsx             # Main Bookshelf page with Supabase
 ├── components/
-│   ├── BookCard.tsx         # Individual book card with edit mode
-│   └── AddBookForm.tsx      # Form to add new books
+│   ├── BookCard.tsx         # Book card with full edit capabilities
+│   └── AddBookForm.tsx      # Add book form with validation
 ├── data/
-│   └── sampleBooks.ts       # Sample book data
+│   └── sampleBooks.ts       # Type definitions & data transformers
 ├── lib/
-│   └── utils.ts             # Utility functions (cn helper)
-└── package.json             # Dependencies and scripts
+│   ├── utils.ts             # Utility functions
+│   └── supabase.ts          # Supabase client configuration
+├── supabase/
+│   └── migrations/
+│       └── 001_create_books_table.sql  # Database schema
+├── .env.local               # Environment variables (gitignored)
+├── package.json             # Dependencies and scripts
+├── README.md                # This file
+└── SUPABASE_SETUP.md        # Detailed Supabase setup guide
 ```
 
 ## 🎨 Design Features
@@ -122,6 +138,18 @@ Each book card shows:
 - Star rating (0-5 stars)
 - Description
 - Personal notes
+
+## 🗄️ Database Integration
+
+This app uses **Supabase** for data persistence:
+
+- ✅ All books are stored in PostgreSQL via Supabase
+- ✅ Changes are saved automatically (optimistic updates + server sync)
+- ✅ Data persists across page refreshes and browser sessions
+- ✅ No backend code needed - direct client-to-database connection
+- ✅ Row Level Security enabled for future multi-user support
+
+**See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for complete setup instructions.**
 
 ## 🔮 Future Enhancements
 
