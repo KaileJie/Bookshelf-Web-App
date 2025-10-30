@@ -20,6 +20,8 @@ export default function AddBookForm({ onAddBook }: AddBookFormProps) {
     coverUrl: "",
     rating: 0,
     readingStatus: "Not Started" as Book["readingStatus"],
+    progress: 0,
+    genre: "Fiction",
   });
   const [errors, setErrors] = useState<{ title?: string; author?: string }>({});
 
@@ -44,6 +46,8 @@ export default function AddBookForm({ onAddBook }: AddBookFormProps) {
     onAddBook({
       ...formData,
       coverUrl: formData.coverUrl || "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop",
+      genre: formData.category, // Use category as genre
+      progress: formData.readingStatus === "Completed" ? 100 : formData.readingStatus === "Reading" ? 50 : 0,
     });
 
     // Reset form
@@ -56,6 +60,8 @@ export default function AddBookForm({ onAddBook }: AddBookFormProps) {
       coverUrl: "",
       rating: 0,
       readingStatus: "Not Started",
+      progress: 0,
+      genre: "Fiction",
     });
     setErrors({});
     setIsOpen(false);
