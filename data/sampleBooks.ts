@@ -69,7 +69,9 @@ export const sampleBooks: Book[] = [
     rating: 5,
     notes: "A masterpiece of American literature. The symbolism is incredible.",
     readingStatus: "Completed",
-    coverUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop"
+    coverUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
+    progress: 100,
+    genre: "Classic Literature"
   },
   {
     id: "2",
@@ -80,7 +82,9 @@ export const sampleBooks: Book[] = [
     rating: 5,
     notes: "Powerful story about justice and morality. Atticus Finch is an inspiring character.",
     readingStatus: "Completed",
-    coverUrl: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop"
+    coverUrl: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop",
+    progress: 100,
+    genre: "Classic Literature"
   },
   {
     id: "3",
@@ -91,7 +95,9 @@ export const sampleBooks: Book[] = [
     rating: 4,
     notes: "Chilling and prophetic. Makes you think about privacy and freedom.",
     readingStatus: "Reading",
-    coverUrl: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop"
+    coverUrl: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop",
+    progress: 65,
+    genre: "Science Fiction"
   },
   {
     id: "4",
@@ -102,7 +108,9 @@ export const sampleBooks: Book[] = [
     rating: 4,
     notes: "Witty dialogue and complex characters. Elizabeth Bennet is wonderful.",
     readingStatus: "Completed",
-    coverUrl: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop"
+    coverUrl: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop",
+    progress: 100,
+    genre: "Romance"
   },
   {
     id: "5",
@@ -113,7 +121,9 @@ export const sampleBooks: Book[] = [
     rating: 5,
     notes: "An enchanting adventure! Perfect for escaping into Middle-earth.",
     readingStatus: "Reading",
-    coverUrl: "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=400&h=600&fit=crop"
+    coverUrl: "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=400&h=600&fit=crop",
+    progress: 45,
+    genre: "Fantasy"
   },
   {
     id: "6",
@@ -124,7 +134,9 @@ export const sampleBooks: Book[] = [
     rating: 4,
     notes: "Very actionable advice. The 1% improvement concept is powerful.",
     readingStatus: "Not Started",
-    coverUrl: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&h=600&fit=crop"
+    coverUrl: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&h=600&fit=crop",
+    progress: 0,
+    genre: "Self-Help"
   }
 ];
 
