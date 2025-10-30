@@ -9,6 +9,10 @@ export interface Book {
   readingStatus: "Not Started" | "Reading" | "Completed";
   coverUrl: string;
   created_at?: string;
+  // v2.0 fields
+  progress: number; // 0-100
+  genre: string;
+  last_updated?: string;
 }
 
 // Helper to convert Supabase DB format to App format
@@ -23,7 +27,11 @@ export function dbToBook(dbBook: any): Book {
     notes: dbBook.notes || '',
     readingStatus: dbBook.reading_status || 'Not Started',
     coverUrl: dbBook.cover_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
-    created_at: dbBook.created_at
+    created_at: dbBook.created_at,
+    // v2.0 fields
+    progress: dbBook.progress || 0,
+    genre: dbBook.genre || dbBook.category || 'Fiction',
+    last_updated: dbBook.last_updated
   };
 }
 
@@ -37,7 +45,10 @@ export function bookToDb(book: Partial<Book>, excludeId: boolean = false) {
     rating: book.rating || 0,
     notes: book.notes || '',
     reading_status: book.readingStatus || 'Not Started',
-    cover_url: book.coverUrl || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop'
+    cover_url: book.coverUrl || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
+    // v2.0 fields
+    progress: book.progress !== undefined ? book.progress : 0,
+    genre: book.genre || book.category || 'Fiction'
   };
   
   // Only include id if it exists and we're not excluding it
